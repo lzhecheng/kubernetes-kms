@@ -31,3 +31,6 @@ tests/e2e/generated_manifests/*
 
 # Go tools
 .tools/
+
+# Some tests
+pkg/plugin/keyvault1_test.go
