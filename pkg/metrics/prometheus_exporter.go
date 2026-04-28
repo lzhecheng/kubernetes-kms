@@ -7,10 +7,9 @@ import (
 
 	cgprometheus "github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/exporters/prometheus"
-	"go.opentelemetry.io/otel/metric/global"
 	"go.opentelemetry.io/otel/sdk/metric"
-	"go.opentelemetry.io/otel/sdk/metric/aggregation"
 	"monis.app/mlog"
 )
 
@@ -32,7 +31,7 @@ func initPrometheusExporter(metricsAddress string) error {
 					Kind: metric.InstrumentKindHistogram,
 				},
 				metric.Stream{
-					Aggregation: aggregation.ExplicitBucketHistogram{
+					Aggregation: metric.AggregationExplicitBucketHistogram{
 						// Use custom buckets to avoid the default buckets which are too small for our use case.
 						// Start 100ms with last bucket being [~4m, +Inf)
 						Boundaries: cgprometheus.ExponentialBucketsRange(0.1, 2, 11),
@@ -41,7 +40,7 @@ func initPrometheusExporter(metricsAddress string) error {
 			),
 		),
 	)
-	global.SetMeterProvider(meterProvider)
+	otel.SetMeterProvider(meterProvider)
 
 	http.HandleFunc(fmt.Sprintf("/%s", metricsEndpoint), promhttp.Handler().ServeHTTP)
 	go func() {
