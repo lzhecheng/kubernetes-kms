@@ -24,6 +24,11 @@ jobs:
       - group: kubernetes-kms
 
     steps:
+      - task: GoTool@0
+        inputs:
+          version: 1.25.7
+      - template: prepare-deps.yaml
+
       - script: make e2e-install-prerequisites
         displayName: "Install e2e test prerequisites"
 
@@ -43,7 +48,7 @@ jobs:
       
       - template: manifest-template.yml
         parameters:
-          registry: mcr.microsoft.com/oss/azure/kms
+          registry: mcr.microsoft.com/oss/v2/azure/kms
           imageName: keyvault
           imageVersion: $(LATEST_KMS_VERSION)
 

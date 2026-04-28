@@ -37,7 +37,7 @@ type StatsReporter interface {
 
 // NewStatsReporter instantiates otel reporter.
 func NewStatsReporter() (StatsReporter, error) {
-	meter := otel.Meter(instrumentationName)
+	meter := otel.GetMeterProvider().Meter(instrumentationName)
 
 	metricCounter, err := meter.Float64Histogram(
 		kmsRequestMetricName,
